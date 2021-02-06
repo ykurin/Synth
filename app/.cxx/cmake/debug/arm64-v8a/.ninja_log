@@ -1,0 +1,3 @@
+# ninja log v5
+1	64	634312374	CMakeFiles/native-lib.dir/src/main/cpp/Oscillator.cpp.o	dcc4abd3bd6f5b06
+64	137	634312374	../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so	fa559b3319de22ac
