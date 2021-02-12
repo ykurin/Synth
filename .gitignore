@@ -62,6 +62,7 @@ gen-external-apklibs
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
+.cxx/
 
 # NDK
 obj/
@@ -96,6 +97,7 @@ obj/
 .idea/gradle.xml
 .idea/jarRepositories.xml
 .idea/navEditor.xml
+.idea/inspectionProfiles/
 
 # OS-specific files
 .DS_Store
