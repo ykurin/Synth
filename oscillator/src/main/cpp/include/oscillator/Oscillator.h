@@ -6,7 +6,7 @@
 #define SYNTH_OSCILLATOR_H
 
 #include <atomic>
-//#include <stdint.h>
+#include <stdint.h>
 
 class Oscillator {
 public:
@@ -16,11 +16,11 @@ public:
     void render(float *audioData, int32_t numFrames);
 
 private:
-    std::atomic<bool> _isOn{false};
-    double _phase = 0.0;
-    double _phaseIncrement = 0.0;
-    double _frequency = 523.25;
-    int32_t _sampleRate = 16000;
+    std::atomic<bool> m_isOn{false};
+    double m_phase = 0.0;
+    double m_phaseIncrement = 0.0;
+    double m_frequency = 523.25;
+    int32_t m_sampleRate = 16000;
 
     void calculatePhaseIncrement();
 };

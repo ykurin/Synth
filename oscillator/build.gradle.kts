@@ -3,10 +3,8 @@ plugins {
     id("kotlin-android")
 }
 
-val kotlinVersion = "1.4.21-2"
-
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
     implementation("androidx.core:core-ktx:1.3.2")
     implementation("androidx.appcompat:appcompat:1.2.0")
     implementation("com.google.android.material:material:1.3.0")
@@ -27,6 +25,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        externalNativeBuild {
+            cmake {
+                arguments("-DANDROID_STL=c++_shared")
+            }
+        }
     }
 
     buildTypes {
@@ -48,5 +52,27 @@ android {
             version = "3.10.2"
         }
     }
-    ndkVersion = "22.0.7026061"
+    ndkVersion = "21.3.6528147"
+
+    // Enable generation of Prefab packages and include them in the library's AAR.
+    buildFeatures {
+        prefabPublishing = true
+    }
+
+    // Include the "oscillator" module from the native build system in the AAR,
+    // and export the headers in src/main/cpp/include to its consumers
+    prefab {
+        create("oscillator") {
+           headers = "src/main/cpp/include"
+        }
+    }
+
+    // Avoid packing the unnecessary libraries into final AAR. For details
+    // refer to https://issuetracker.google.com/issues/168777344#comment5
+    // Note that if your AAR also contains Java/Kotlin APIs, you should not
+    // exclude libraries that are used by those APIs.
+    packagingOptions {
+        excludes.add("**/libmylibrary.so")
+        excludes.add("**/libc++_shared.so")
+    }
 }

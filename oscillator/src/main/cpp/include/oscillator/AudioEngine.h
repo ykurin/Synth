@@ -16,8 +16,8 @@ public:
     void setIsOscillatorOn(bool isOscillatorOn);
 
 private:
-    Oscillator _oscillator;
-    AAudioStream *_stream;
+    Oscillator m_oscillator;
+    AAudioStream *m_stream;
 };
 
 

@@ -3,36 +3,18 @@ plugins {
     id("kotlin-android")
 }
 
-val kotlinVersion = "1.4.21-2"
-
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
     implementation("androidx.core:core-ktx:1.3.2")
     implementation("androidx.appcompat:appcompat:1.2.0")
     implementation("com.google.android.material:material:1.3.0")
     implementation("androidx.constraintlayout:constraintlayout:2.0.4")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0")
+    implementation(project(mapOf("path" to ":oscillator")))
     testImplementation("junit:junit:4.+")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
-
-    // Compose
-    implementation("androidx.compose.ui:ui:1.0.0-alpha11")
-    // Tooling support (Previews, etc.)
-    implementation("androidx.compose.ui:ui-tooling:1.0.0-alpha11")
-    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation("androidx.compose.foundation:foundation:1.0.0-alpha11")
-    // Material Design
-    implementation("androidx.compose.material:material:1.0.0-alpha11")
-    // Material design icons
-    implementation("androidx.compose.material:material-icons-core:1.0.0-alpha11")
-    implementation("androidx.compose.material:material-icons-extended:1.0.0-alpha11")
-    // Integration with observables
-    implementation("androidx.compose.runtime:runtime-livedata:1.0.0-alpha11")
-    implementation("androidx.compose.runtime:runtime-rxjava2:1.0.0-alpha11")
-    // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.0-alpha11")
 }
 
 android {
@@ -47,10 +29,16 @@ android {
         versionName("1.0")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                arguments("-DANDROID_STL=c++_shared")
+            }
+        }
     }
     buildFeatures {
         viewBinding = true
-        compose = true
+        prefab = true
     }
     buildTypes {
         getByName("release") {
@@ -66,7 +54,11 @@ android {
         jvmTarget = "1.8"
         useIR = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-alpha11"
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.10.2"
+        }
     }
+    ndkVersion = "21.3.6528147"
 }
