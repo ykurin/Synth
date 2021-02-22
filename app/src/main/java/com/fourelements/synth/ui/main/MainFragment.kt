@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.MotionEvent
 import android.view.View
+import com.fourelements.synth.MainActivity
 import com.fourelements.synth.Note
 import com.fourelements.synth.R
 import com.fourelements.synth.databinding.MainFragmentBinding
@@ -41,15 +42,15 @@ class MainFragment : Fragment(R.layout.main_fragment) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     Log.d(TAG, "ACTION_DOWN")
-                    viewModel.playSynth(freqOfTone)
+                    (activity as MainActivity).playNote(freqOfTone)
                 }
                 MotionEvent.ACTION_CANCEL -> {
                     Log.d(TAG, "ACTION_CANCEL")
-                    viewModel.stopPlaying(freqOfTone)
+                    (activity as MainActivity).stopPlayingNote()
                 }
                 MotionEvent.ACTION_UP -> {
                     Log.d(TAG, "ACTION_UP")
-                    viewModel.stopPlaying(freqOfTone)
+                    (activity as MainActivity).stopPlayingNote()
                     v.performClick()
                 }
             }

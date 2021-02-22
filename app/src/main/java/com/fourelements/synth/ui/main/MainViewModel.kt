@@ -6,6 +6,7 @@ import android.media.AudioManager
 import android.media.AudioTrack
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.fourelements.synth.Note
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.ceil
 import kotlin.math.sin
@@ -26,13 +27,13 @@ class MainViewModel : ViewModel() {
         AudioFormat.ENCODING_PCM_FLOAT
     )
 
-
-    private val synthThreadsMap: HashMap<Float, PlaySynth> = HashMap()
+    private val synth = PlaySynth().apply {
+        //start()
+    }
 
     override fun onCleared() {
         super.onCleared()
-        synthThreadsMap.values.forEach { it.isOn.set(false) }
-        synthThreadsMap.clear()
+        //synth.interrupt()
     }
 
     fun playSynth(freqOfTone: Float) {
@@ -40,24 +41,18 @@ class MainViewModel : ViewModel() {
         Log.d(TAG, "audioTrackBufferSize $audioTrackBufferSize")
         Log.d(TAG, "samole rate $sampleRate")
 
-        if (!synthThreadsMap.containsKey(freqOfTone)) {
-            synthThreadsMap[freqOfTone] = PlaySynth(freqOfTone).apply {
-                start()
-            }
-        }
+        //synth.play(freqOfTone)
     }
 
-    fun stopPlaying(freqOfTone: Float) {
+    fun stopPlaying() {
         Log.d(TAG, "stopPlaying()")
-        synthThreadsMap[freqOfTone]?.also {
-            it.isOn.set(false)
-            synthThreadsMap.remove(freqOfTone)
-        }
+        //synth.stopPlaying()
     }
 
-    private inner class PlaySynth(freqOfTone: Float) : Thread() {
+    private inner class PlaySynth : Thread() {
 
-        var isOn = AtomicBoolean(true)
+        private val isOn = AtomicBoolean(false)
+        private var freqOfTone: Float = Note.C5
 
         private val audioTrack = AudioTrack.Builder()
             .setTransferMode(AudioTrack.MODE_STREAM)
@@ -79,12 +74,26 @@ class MainViewModel : ViewModel() {
             .build()
 
         private var phase = 0.0
-        private val phaseIncrement = freqOfTone * TWO_PI / sampleRate
+        private var phaseIncrement = 0.0
+
+        private fun calculatePhaseIncrement() {
+            phaseIncrement = freqOfTone * TWO_PI / sampleRate
+        }
+
+        fun play(freqOfTone: Float) {
+            this.freqOfTone = freqOfTone
+            calculatePhaseIncrement()
+            isOn.set(true)
+        }
+
+        fun stopPlaying() {
+            isOn.set(false)
+        }
 
         override fun run() {
             Log.d(TAG, "PlaySynth run()")
             audioTrack.play()
-            while (isOn.get()) {
+            while (!isInterrupted) {
                 val sound = generateSynth()
                 writeSound(sound)
             }
@@ -103,7 +112,6 @@ class MainViewModel : ViewModel() {
                     phase += phaseIncrement
                     if (phase >= TWO_PI) phase -= TWO_PI
                 } else {
-                    Log.d(TAG, "generateSynth interrupted")
                     sound[i] = 0f
                 }
             }
@@ -131,7 +139,7 @@ class MainViewModel : ViewModel() {
                         Log.e(TAG, "AudioTrack.ERROR")
                     }
                     sizeToWrite -> {
-                        Log.d(TAG, "Written $sizeToWrite")
+                        //Log.d(TAG, "Written $sizeToWrite")
                         bufferSize -= sizeToWrite
                         offset += sizeToWrite
                     }

@@ -2,13 +2,14 @@
 // Created by Yury on 2/6/2021.
 //
 
-#include "oscillator/Oscillator.h"
+#include "Oscillator.h"
 #include <cmath>
 
 #define TWO_PI (3.14159 * 2)
 #define AMPLITUDE 0.3
 
-void Oscillator::setIsOn(bool inOn) {
+void Oscillator::setIsOn(bool inOn, double frequency) {
+    setFrequency(frequency);
     m_isOn.store(inOn);
 }
 
@@ -23,16 +24,16 @@ void Oscillator::setFrequency(double frequency) {
 }
 
 void Oscillator::calculatePhaseIncrement() {
-    m_phaseIncrement = (TWO_PI * m_frequency) / (double) m_sampleRate;
+    m_phaseIncrement.store((TWO_PI * m_frequency) / (double) m_sampleRate);
 }
 
-void Oscillator::render(float *audioData, int32_t numFrames) {
+void Oscillator::renderAudio(float *audioData, std::int32_t numFrames) {
     if (!m_isOn.load()) m_phase = 0;
 
     for (int i = 0; i < numFrames; ++i) {
         if (m_isOn.load()) {
             audioData[i] = (float) (sin(m_phase) * AMPLITUDE);
-            m_phase += m_phaseIncrement;
+            m_phase += m_phaseIncrement.load();
             if (m_phase > TWO_PI) m_phase -= TWO_PI;
         } else {
             audioData[i] = 0;

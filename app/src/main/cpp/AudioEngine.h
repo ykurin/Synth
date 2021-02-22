@@ -13,7 +13,7 @@ public:
     bool start();
     void stop();
     void restart();
-    void setIsOscillatorOn(bool isOscillatorOn);
+    void setIsOscillatorOn(bool isOscillatorOn, double frequency);
 
 private:
     Oscillator m_oscillator;

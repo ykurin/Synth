@@ -3,7 +3,7 @@
 //
 
 #include <android/log.h>
-#include "oscillator/AudioEngine.h"
+#include "AudioEngine.h"
 #include <thread>
 #include <mutex>
 
@@ -16,7 +16,7 @@ aaudio_data_callback_result_t dataCallback(
         void *audioData,
         int32_t numFrames) {
 
-    ((Oscillator *) (userData))->render(static_cast<float *>(audioData), numFrames);
+    ((Oscillator *) (userData))->renderAudio(static_cast<float *>(audioData), numFrames);
     return AAUDIO_CALLBACK_RESULT_CONTINUE;
 }
 
@@ -84,6 +84,6 @@ void AudioEngine::restart() {
     }
 }
 
-void AudioEngine::setIsOscillatorOn(bool isOscillatorOn) {
-    m_oscillator.setIsOn(isOscillatorOn);
+void AudioEngine::setIsOscillatorOn(bool isOscillatorOn, double frequency) {
+    m_oscillator.setIsOn(isOscillatorOn, frequency);
 }
