@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.30")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.31")
     implementation("androidx.core:core-ktx:1.3.2")
     implementation("androidx.appcompat:appcompat:1.2.0")
     implementation("com.google.android.material:material:1.3.0")
@@ -17,13 +17,13 @@ dependencies {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdkVersion(33)
     buildToolsVersion("30.0.3")
 
     defaultConfig {
         applicationId = "com.fourelements.synth"
         minSdkVersion(28)
-        targetSdkVersion(30)
+        targetSdkVersion(33)
         versionCode(1)
         versionName("1.0")
 
@@ -60,4 +60,5 @@ android {
         }
     }
     ndkVersion = "21.3.6528147"
+    namespace = "com.fourelements.synth"
 }
